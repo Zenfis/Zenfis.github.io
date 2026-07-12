@@ -1,0 +1,660 @@
+/* ==========================================================================
+   ДИЗАЙН-СИСТЕМА
+   Идея: сайт инженера-проектировщика оформлен как сам язык его работы —
+   чертёжная линовка, размерные линии, штамп (основная надпись чертежа).
+   ========================================================================== */
+
+:root {
+  /* -- Палитра -- */
+  --paper: #EEF1EE;        /* калька/ватман, холоднее стандартного "тёплого крема" */
+  --paper-raised: #F8F9F7; /* карточки, приподнятые поверхности */
+  --ink: #191B1C;          /* основной текст, почти чёрный с холодным оттенком */
+  --ink-soft: #565F5F;     /* второстепенный текст */
+  --line: #C9D0CB;         /* линии, границы, миллиметровка */
+  --line-strong: #A8B2AC;
+  --accent: #C1392B;       /* "красный карандаш" — пометки, акценты, CTA */
+  --accent-ink: #FFFFFF;
+  --blueprint: #2C4A6E;    /* "синька" — ссылки, вторичный акцент, теги */
+  --blueprint-soft: #E4EAF0;
+
+  /* -- Типографика -- */
+  --font-display: "IBM Plex Sans", "Arial", sans-serif;
+  --font-body: "IBM Plex Sans", "Arial", sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+
+  /* -- Сетка -- */
+  --container: 1120px;
+  --gap: 24px;
+  --radius: 2px; /* почти без скруглений — чертёж не скруглён */
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(var(--paper) 1px, transparent 1px) 0 0 / 100% 32px,
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.site-footer {
+  flex-shrink: 0;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--blueprint); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+}
+h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); }
+h2 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
+h3 { font-size: 1.25rem; }
+
+p { margin: 0 0 1em; }
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* ==========================================================================
+   ШАПКА
+   ========================================================================== */
+.site-header {
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--paper-raised);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 68px;
+  gap: 16px;
+}
+.brand {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.brand:hover { color: var(--accent); }
+.brand .brand-mark {
+  border: 1px solid var(--ink);
+  padding: 2px 6px;
+  font-size: 0.72rem;
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--line-strong);
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+
+.site-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+}
+.site-nav a {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: var(--ink-soft);
+  padding: 8px 12px;
+  display: block;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .nav-toggle { display: inline-flex; align-items: center; gap: 8px; }
+  .site-nav {
+    display: none;
+    position: absolute;
+    left: 0; right: 0; top: 68px;
+    background: var(--paper-raised);
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .site-nav.is-open { display: block; }
+  .site-nav ul { flex-direction: column; padding: 8px 24px 16px; }
+  .site-nav a { padding: 10px 0; border-bottom: 1px solid var(--line); }
+}
+
+/* ==========================================================================
+   ШТАМП (title block) — сигнатурный элемент сайта.
+   Стилизация под основную надпись инженерного чертежа: поля через
+   вертикальные линии, подписи мелким моноширинным шрифтом.
+   ========================================================================== */
+.title-block {
+  border: 1px solid var(--ink);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  background: var(--paper-raised);
+}
+.title-block__field {
+  padding: 10px 14px;
+  border-left: 1px solid var(--line-strong);
+}
+.title-block__field:first-child { border-left: none; }
+.title-block__field span {
+  display: block;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  margin-bottom: 3px;
+}
+@media (max-width: 700px) {
+  .title-block { grid-auto-flow: row; }
+  .title-block__field { border-left: none; border-top: 1px solid var(--line-strong); }
+  .title-block__field:first-child { border-top: none; }
+}
+
+/* ==========================================================================
+   РАЗМЕРНАЯ ЛИНИЯ — разделитель секций вместо обычного <hr>,
+   как размерная линия на чертеже: засечки по краям + подпись по центру.
+   ========================================================================== */
+.dim-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 64px 0 32px;
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dim-divider::before,
+.dim-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line-strong);
+  background-image:
+    linear-gradient(var(--line-strong), var(--line-strong));
+  position: relative;
+}
+.dim-divider .tick {
+  width: 1px;
+  height: 8px;
+  background: var(--line-strong);
+}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero {
+  padding: 72px 0 56px;
+  border-bottom: 1px solid var(--line);
+}
+.hero h1 { margin-top: 14px; }
+.hero__lead {
+  max-width: 640px;
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  margin-top: 18px;
+}
+.hero__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   КНОПКИ
+   ========================================================================== */
+.btn {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn--accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn--accent:hover { background: #a12f22; border-color: #a12f22; color: #fff; }
+
+/* ==========================================================================
+   БЛОКИ / СЕТКИ ГЛАВНОЙ
+   ========================================================================== */
+.section { padding: 8px 0 48px; }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+@media (max-width: 860px) { .summary-grid { grid-template-columns: 1fr; } }
+
+.summary-card {
+  border: 1px solid var(--line-strong);
+  background: var(--paper-raised);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.summary-card .eyebrow { margin-bottom: 4px; }
+.summary-card a.summary-card__link {
+  margin-top: auto;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.stat-row {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: wrap;
+  margin: 8px 0 0;
+}
+.stat {
+  border-left: 2px solid var(--accent);
+  padding: 4px 0 4px 14px;
+}
+.stat b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+}
+.stat span { color: var(--ink-soft); font-size: 0.85rem; }
+
+/* ==========================================================================
+   ФИЛЬТР ПОРТФОЛИО
+   ========================================================================== */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0 36px;
+}
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 9px 14px;
+  border: 1px solid var(--line-strong);
+  background: var(--paper-raised);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.filter-btn:hover { border-color: var(--ink); color: var(--ink); }
+.filter-btn.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--gap);
+}
+
+.project-card {
+  border: 1px solid var(--line-strong);
+  background: var(--paper-raised);
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.project-card:hover { border-color: var(--ink); transform: translateY(-2px); }
+.project-card__media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.project-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.project-card__body { padding: 16px 16px 0; flex: 1; }
+.project-card__body h3 { margin-bottom: 6px; }
+.project-card__body p { color: var(--ink-soft); font-size: 0.92rem; }
+.project-card__meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+  margin-top: 14px;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.project-grid[hidden],
+.project-card[hidden] { display: none; }
+
+.empty-state {
+  font-family: var(--font-mono);
+  color: var(--ink-soft);
+  padding: 40px 0;
+  text-align: center;
+  display: none;
+}
+.empty-state.is-visible { display: block; }
+
+/* ==========================================================================
+   СТРАНИЦА ПРОЕКТА
+   ========================================================================== */
+.project-hero { padding: 40px 0 24px; border-bottom: 1px solid var(--line); }
+.back-link {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.project-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  margin: 36px 0;
+}
+.project-gallery figure { margin: 0; }
+.project-gallery img {
+  border: 1px solid var(--line-strong);
+  width: 100%;
+  cursor: zoom-in;
+}
+.project-gallery figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: 10px;
+}
+
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  margin: 24px 0;
+}
+.spec-table th, .spec-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.spec-table th {
+  width: 40%;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   СТРАНИЦЫ КЖ / КР — блок "модель + чертёж"
+   ========================================================================== */
+.method-step {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 18px;
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+}
+.method-step:first-of-type { border-top: none; }
+.method-step__num {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+.figure-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+.figure-pair img { border: 1px solid var(--line-strong); }
+.figure-pair figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  margin-top: 6px;
+}
+@media (max-width: 700px) { .figure-pair { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   ЛАЙТБОКС — увеличение чертежей по клику
+   ========================================================================== */
+img.zoomable { cursor: zoom-in; }
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(25, 27, 28, 0.94);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px;
+  overflow: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+}
+.lightbox-overlay.is-open { opacity: 1; visibility: visible; }
+
+/* В обычном режиме картинка центрируется по экрану.
+   При увеличении (is-zoomed) центрирование через flex отключаем —
+   иначе браузер не даёт проскроллить к части картинки, обрезанной
+   слева/сверху (известная особенность центрирования overflow во flex). */
+.lightbox-overlay.is-zoomed {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.lightbox-image {
+  max-width: 92vw;
+  max-height: 86vh;
+  width: auto;
+  height: auto;
+  margin: auto;
+  border: 1px solid var(--line-strong);
+  cursor: zoom-in;
+  display: block;
+}
+.lightbox-image.is-zoomed {
+  max-width: none;
+  max-height: none;
+  cursor: zoom-out;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--paper-raised);
+  padding: 10px 16px;
+  cursor: pointer;
+  z-index: 101;
+}
+.lightbox-close:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.lightbox-hint {
+  position: fixed;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--paper-raised);
+  opacity: 0.7;
+  margin: 0;
+  pointer-events: none;
+}
+
+.download-card {
+  border: 1px dashed var(--line-strong);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 28px 0;
+  background: var(--paper-raised);
+}
+.download-card__text { font-family: var(--font-mono); font-size: 0.85rem; }
+.download-card__text span { display: block; color: var(--ink-soft); font-size: 0.75rem; margin-top: 4px; }
+
+/* ==========================================================================
+   О СЕБЕ
+   ========================================================================== */
+.bio-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.bio-photo img { border: 1px solid var(--line-strong); aspect-ratio: 3/4; object-fit: cover; width: 100%; }
+@media (max-width: 760px) { .bio-layout { grid-template-columns: 1fr; } }
+
+.contact-list { list-style: none; margin: 20px 0 0; padding: 0; font-family: var(--font-mono); font-size: 0.9rem; }
+.contact-list li { padding: 8px 0; border-top: 1px solid var(--line); }
+.contact-list li:first-child { border-top: none; }
+
+.tool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 8px 0 8px;
+}
+.tool-tag {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  border: 1px solid var(--line-strong);
+  background: var(--paper-raised);
+  padding: 8px 14px;
+}
+
+/* ==========================================================================
+   ОПЫТ / ОБРАЗОВАНИЕ — строка «дата слева, детали справа» (в духе резюме)
+   ========================================================================== */
+.resume-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+  padding: 22px 0;
+}
+.resume-row + .resume-row { border-top: 1px solid var(--line); }
+.resume-row__date {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  padding-top: 2px;
+}
+.resume-row__body h3 { margin-bottom: 4px; }
+.resume-row__role {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+.resume-row__body ul { margin: 0; padding-left: 18px; }
+.resume-row__body li { margin-bottom: 6px; color: var(--ink-soft); }
+.resume-row__body li::marker { color: var(--accent); }
+
+@media (max-width: 620px) {
+  .resume-row { grid-template-columns: 1fr; gap: 6px; }
+  .resume-row__date { color: var(--ink); font-weight: 500; }
+}
+
+/* ==========================================================================
+   ФУТЕР
+   ========================================================================== */
+.site-footer {
+  border-top: 1px solid var(--ink);
+  margin-top: 72px;
+  padding: 32px 0 40px;
+}
+.site-footer .title-block { margin-bottom: 20px; }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a { color: var(--ink-soft); }

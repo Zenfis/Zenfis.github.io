@@ -1,0 +1,33 @@
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="{{ '/' | relative_url }}">
+      <span class="brand-mark">КЖ·КР</span>{{ site.data.contacts.name }}
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      Меню
+    </button>
+
+    <nav class="site-nav" id="siteNav">
+      <ul>
+        {% for item in site.data.nav %}
+          {% assign clean_url = item.url | relative_url %}
+          <li>
+            <a href="{{ clean_url }}"
+               {% if page.url == item.url %}aria-current="page"{% endif %}>
+              {{ item.title }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  document.getElementById('navToggle').addEventListener('click', function () {
+    var nav = document.getElementById('siteNav');
+    var open = nav.classList.toggle('is-open');
+    this.setAttribute('aria-expanded', open);
+  });
+</script>

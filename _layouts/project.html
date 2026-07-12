@@ -1,0 +1,49 @@
+---
+layout: default
+---
+<div class="container project-hero">
+  <a class="back-link" href="{{ '/portfolio/' | relative_url }}">← Все проекты</a>
+  <p class="eyebrow" style="margin-top:18px;">
+    {% for cat in page.categories %}
+      {% assign cat_label = site.project_categories | where: "key", cat | map: "label" | first %}
+      {{ cat_label }}{% unless forloop.last %} · {% endunless %}
+    {% endfor %}
+  </p>
+  <h1>{{ page.title }}</h1>
+  {% if page.short %}<p class="hero__lead">{{ page.short }}</p>{% endif %}
+</div>
+
+<div class="container">
+  <table class="spec-table">
+    <tbody>
+      {% if page.year %}<tr><th>Год</th><td>{{ page.year }}</td></tr>{% endif %}
+      {% if page.stage %}<tr><th>Стадия</th><td>{{ page.stage }}</td></tr>{% endif %}
+      {% if page.location %}<tr><th>Расположение</th><td>{{ page.location }}</td></tr>{% endif %}
+      {% if page.customer %}<tr><th>Заказчик</th><td>{{ page.customer }}</td></tr>{% endif %}
+      {% if page.area %}<tr><th>Площадь</th><td>{{ page.area }}</td></tr>{% endif %}
+    </tbody>
+  </table>
+
+  {{ content }}
+
+  {% if page.images %}
+  <div class="project-gallery">
+    {% for img in page.images %}
+    <figure>
+      <img class="zoomable" src="{{ img.src | relative_url }}" alt="{{ img.caption | default: page.title | escape }}" loading="lazy">
+      {% if img.caption %}<figcaption>{{ img.caption }}</figcaption>{% endif %}
+    </figure>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if page.pdf %}
+  <div class="download-card">
+    <div class="download-card__text">
+      Полный комплект чертежей проекта
+      <span>PDF, пример оформления</span>
+    </div>
+    <a class="btn btn--accent" href="{{ page.pdf | relative_url }}" download>Скачать PDF</a>
+  </div>
+  {% endif %}
+</div>

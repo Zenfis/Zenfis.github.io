@@ -1,0 +1,28 @@
+{% assign project = include.project %}
+<a href="{{ project.url | relative_url }}"
+   class="project-card"
+   data-categories="{{ project.categories | join: ' ' }}"
+   data-types="{{ project.types | join: ' ' }}">
+  <div class="project-card__media">
+    <img src="{{ project.cover | relative_url }}" alt="{{ project.title }}" loading="lazy">
+  </div>
+  <div class="project-card__body">
+    <h3>{{ project.title }}</h3>
+    <p>{{ project.short }}</p>
+  </div>
+  <div class="project-card__meta">
+    <span>
+      {%- for cat in project.categories -%}
+        {%- assign cat_label = site.project_categories | where: "key", cat | map: "label" | first -%}
+        {{ cat_label }}{%- unless forloop.last -%} · {%- endunless -%}
+      {%- endfor -%}
+      {%- if project.types -%}
+        {{ " " }}[{%- for t in project.types -%}
+          {%- assign type_label = site.project_types | where: "key", t | map: "label" | first -%}
+          {{ type_label }}{%- unless forloop.last -%}, {%- endunless -%}
+        {%- endfor -%}]
+      {%- endif -%}
+    </span>
+    <span>{{ project.year }}</span>
+  </div>
+</a>

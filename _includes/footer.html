@@ -1,0 +1,37 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="title-block">
+      <div class="title-block__field">
+        <span>Инженер</span>{{ site.data.contacts.name }}
+      </div>
+      <div class="title-block__field">
+        <span>Специализация</span>{{ site.data.contacts.role }}
+      </div>
+      <!--
+      <div class="title-block__field">
+        <span>Телефон</span><a href="tel:{{ site.data.contacts.phone_link }}">{{ site.data.contacts.phone }}</a>
+      </div>
+      -->
+      <div class="title-block__field">
+        <span>Почта</span><a href="mailto:{{ site.data.contacts.email }}">{{ site.data.contacts.email }}</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {{ 'now' | date: "%Y" }} {{ site.data.contacts.name }}. {{ site.data.contacts.city }}.</span>
+      <div class="footer-links">
+        <a href="{{ site.data.contacts.telegram }}" target="_blank" rel="noopener">Telegram</a>
+        <!--
+        <a href="{{ site.data.contacts.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="{{ site.data.contacts.vk }}" target="_blank" rel="noopener">VK</a>
+        -->
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Проектирование сайта - Жирнов Егор Ильич</span>
+      <div class="footer-links"></div>
+      <a href="https://t.me/zhirnov_egor" target="_blank" rel="noopener">Telegram</a>
+      </div>
+    </div>
+  </div>
+</footer>
